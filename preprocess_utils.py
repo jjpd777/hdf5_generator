@@ -14,7 +14,6 @@ from pathlib import Path
 
 def prepare_dataset(raw_path,clean_path):
     raw_path = Path(raw_path)
-    #cases=list(glob(raw_path + "*"))
     print("There data labels are the following:")
     count = 0
     for case in raw_path.glob('*'):
@@ -26,7 +25,6 @@ def prepare_dataset(raw_path,clean_path):
             os.rename(src,dst)
             count+=1
     print("Extracted a total of",count,"images.")
-#    print(src,dst)
 
 def check_corrupted_images(clean_path):
     imagePaths = Path(clean_path)
@@ -41,17 +39,13 @@ def check_corrupted_images(clean_path):
         count +=1
     print("Total number of good images is",count)
 
-# BASE_PATH = "./dataset/clean_data/data/"
-# MAIN_PATH = "./dataset/chest_xray/"
-# CLEAN_PATH = "./dataset/clean_data/data/"
-# data_folders = ["train/","test/","val/"]
-# sub_folder =list(glob(MAIN_PATH + "train/*"))
 
 def split_data(num_test_images, num_val_images,clean_path):
     trainPaths = list(paths.list_images(clean_path))
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
+
     le = LabelEncoder()
     trainLabels = le.fit_transform(labels)
 
