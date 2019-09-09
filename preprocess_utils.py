@@ -11,49 +11,34 @@ import json
 import cv2
 import os
 from glob import glob
+from pathlib import Path
 
 def prepare_dataset(raw_path,clean_path):
-    data_folders = ["train/","test/","val/"]
-
-    sub_folder =list(glob(raw_path + "train/*"))
-    labels = [x.split("/")[-1] for x in sub_folder]
+    raw_path = Path(raw_path)
+    #cases=list(glob(raw_path + "*"))
     print("There data labels are the following:")
-    print(labels[0],labels[1])
-
     count = 0
-    for directory in data_folders:
-        directory_in_use = MAIN_PATH + directory
-        for case in labels:
-            case_dir = directory_in_use + case + "/"
-            print("Extracting data from ", case_dir)
-            for filename in os.listdir(case_dir):
-                dst = clean_path + case+"-"+ str(count)+".jpeg"
-                src = case_dir +filename
-                os.rename(src,dst)
-                count+=1
+    for case in raw_path.glob('*'):
+        label = str(case).split("/")[-1]
+        print("Extracting data from ", case)
+        for filename in case.glob("*"):
+            dst = clean_path + label + "-" + str(count)+".png"
+            src =  filename
+            os.rename(src,dst)
+            count+=1
     print("Extracted a total of",count,"images.")
+#    print(src,dst)
 
 def check_corrupted_images(clean_path):
-    short_x = 100000
-    short_y = 100000
-    imagePaths = list(paths.list_images(clean_path))
+    imagePaths = Path(clean_path)
+    imagePaths = imagePaths.glob('*.png')
     count = 0
     for image in imagePaths:
-        im_vector = cv2.imread(image)
+        im_vector = cv2.imread(str(image))
         if(im_vector is None):
             print("BAD IMAGE",image)
             os.remove(image)
             continue
-        shape = im_vector.shape
-        if(shape[0]<short_y or ):
-            print(shape,image)
-            short_y = shape[0]
-            os.remove(image)
-        if(shape[1]<short_x):
-            print(shape,image)
-            short_x = shape[1]
-        if(shape[2]<3):
-            print(image,"Less channels")
         count +=1
     print("Total number of good images is",count)
 
@@ -68,11 +53,6 @@ def split_data(num_test_images, num_val_images,clean_path):
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
-    ct = 0
-    for label in labels:
-        if(label == 'PNEUMONIA'):
-            ct+=1
-    print(ct)
     le = LabelEncoder()
     trainLabels = le.fit_transform(labels)
 
