@@ -41,7 +41,9 @@ def check_corrupted_images(clean_path):
 
 
 def split_data(num_test_images, num_val_images,clean_path):
+    np.random.seed(107)
     trainPaths = list(paths.list_images(clean_path))
+    np.shuffle(trainPaths)
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
@@ -57,7 +59,7 @@ def split_data(num_test_images, num_val_images,clean_path):
     # validation data
     val_split = train_test_split(trainPaths, trainLabels,
     	test_size=num_val_images, stratify=trainLabels,
-    	random_state=777,shuffle=True)
+    	random_state=777)
     return (test_split, val_split)
 
 def write_hdf5(splits,build_size,output_hdf5s):
