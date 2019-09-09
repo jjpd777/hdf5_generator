@@ -1,4 +1,3 @@
-from utils import config
 from utils import AspectAwarePreprocessor
 from utils import HDF5DatasetWriter
 from sklearn.preprocessing import LabelEncoder
@@ -96,10 +95,6 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	for (i, (path, label)) in enumerate(zip(paths, labels)):
     		# load the image and process it
     		image = cv2.imread(path)
-    		if(image is None):
-    			print(path)
-    			os.remove(path)
-    			continue
     		image = aap.preprocess(image)
 
     		# if we are building the training dataset, then compute the
@@ -121,7 +116,7 @@ def write_hdf5(splits,build_size,output_hdf5s):
 
     # construct a dictionary of averages, then serialize the means to a
     # JSON file
-    DATASET_MEAN = "./output/pneumonia_mean.json"
+    DATASET_MEAN = "./output/malaria_mean.json"
 
     print("[INFO] serializing means...")
     D = {"R": np.mean(R), "G": np.mean(G), "B": np.mean(B)}
