@@ -11,6 +11,7 @@ import json
 import cv2
 import os
 from glob import glob
+from Pathlib import Path
 
 def prepare_dataset(raw_path,clean_path):
     data_folders = ["train/","test/","val/"]
@@ -34,7 +35,8 @@ def prepare_dataset(raw_path,clean_path):
     print("Extracted a total of",count,"images.")
 
 def check_corrupted_images(clean_path):
-    imagePaths = list(paths.list_images(clean_path))
+    imagePaths = Path(clean_path)
+    imagePaths = imagePaths.glob('*.png')
     count = 0
     for image in imagePaths:
         im_vector = cv2.imread(image)
@@ -48,6 +50,7 @@ def check_corrupted_images(clean_path):
 
 def split_data(num_test_images, num_val_images,clean_path):
     trainPaths = list(paths.list_images(clean_path))
+    np.shuffle(trainPaths)
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
