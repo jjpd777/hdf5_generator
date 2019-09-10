@@ -1,4 +1,3 @@
-from utils import config
 from utils import AspectAwarePreprocessor
 from utils import HDF5DatasetWriter
 from sklearn.preprocessing import LabelEncoder
@@ -11,26 +10,20 @@ import json
 import cv2
 import os
 from glob import glob
+from pathlib import Path
 
 def prepare_dataset(raw_path,clean_path):
-    data_folders = ["train/","test/","val/"]
-
-    sub_folder =list(glob(raw_path + "train/*"))
-    labels = [x.split("/")[-1] for x in sub_folder]
+    raw_path = Path(raw_path)
     print("There data labels are the following:")
-    print(labels[0],labels[1])
-
     count = 0
-    for directory in data_folders:
-        directory_in_use = MAIN_PATH + directory
-        for case in labels:
-            case_dir = directory_in_use + case + "/"
-            print("Extracting data from ", case_dir)
-            for filename in os.listdir(case_dir):
-                dst = clean_path + case+"-"+ str(count)+".jpeg"
-                src = case_dir +filename
-                os.rename(src,dst)
-                count+=1
+    for case in raw_path.glob('*'):
+        label = str(case).split("/")[-1]
+        print("Extracting data from ", case)
+        for filename in case.glob("*"):
+            dst = clean_path + label + "-" + str(count)+".png"
+            src =  filename
+            os.rename(src,dst)
+            count+=1
     print("Extracted a total of",count,"images.")
 
 def check_corrupted_images(clean_path):
@@ -38,7 +31,7 @@ def check_corrupted_images(clean_path):
     imagePaths = imagePaths.glob('*.png')
     count = 0
     for image in imagePaths:
-        im_vector = cv2.imread(image)
+        im_vector = cv2.imread(str(image))
         if(im_vector is None):
             print("BAD IMAGE",image)
             os.remove(image)
@@ -48,6 +41,7 @@ def check_corrupted_images(clean_path):
 
 
 def split_data(num_test_images, num_val_images,clean_path):
+    np.random.seed(107)
     trainPaths = list(paths.list_images(clean_path))
     np.shuffle(trainPaths)
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
@@ -65,7 +59,7 @@ def split_data(num_test_images, num_val_images,clean_path):
     # validation data
     val_split = train_test_split(trainPaths, trainLabels,
     	test_size=num_val_images, stratify=trainLabels,
-    	random_state=777,shuffle=True)
+    	random_state=777)
     return (test_split, val_split)
 
 def write_hdf5(splits,build_size,output_hdf5s):
