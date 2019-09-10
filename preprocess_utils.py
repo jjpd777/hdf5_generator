@@ -11,7 +11,6 @@ import json
 import cv2
 import os
 from glob import glob
-from Pathlib import Path
 
 def prepare_dataset(raw_path,clean_path):
     data_folders = ["train/","test/","val/"]
@@ -54,6 +53,7 @@ def split_data(num_test_images, num_val_images,clean_path):
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
+
     le = LabelEncoder()
     trainLabels = le.fit_transform(labels)
 
