@@ -34,8 +34,6 @@ def prepare_dataset(raw_path,clean_path):
     print("Extracted a total of",count,"images.")
 
 def check_corrupted_images(clean_path):
-    short_x = 100000
-    short_y = 100000
     imagePaths = list(paths.list_images(clean_path))
     count = 0
     for image in imagePaths:
@@ -44,35 +42,15 @@ def check_corrupted_images(clean_path):
             print("BAD IMAGE",image)
             os.remove(image)
             continue
-        shape = im_vector.shape
-        if(shape[0]<short_y or ):
-            print(shape,image)
-            short_y = shape[0]
-            os.remove(image)
-        if(shape[1]<short_x):
-            print(shape,image)
-            short_x = shape[1]
-        if(shape[2]<3):
-            print(image,"Less channels")
         count +=1
     print("Total number of good images is",count)
 
-# BASE_PATH = "./dataset/clean_data/data/"
-# MAIN_PATH = "./dataset/chest_xray/"
-# CLEAN_PATH = "./dataset/clean_data/data/"
-# data_folders = ["train/","test/","val/"]
-# sub_folder =list(glob(MAIN_PATH + "train/*"))
 
 def split_data(num_test_images, num_val_images,clean_path):
     trainPaths = list(paths.list_images(clean_path))
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
-    ct = 0
-    for label in labels:
-        if(label == 'PNEUMONIA'):
-            ct+=1
-    print(ct)
     le = LabelEncoder()
     trainLabels = le.fit_transform(labels)
 
@@ -98,7 +76,6 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	("val", valPaths, valLabels, val_hdf5),
     	("test", testPaths, testLabels, test_hdf5)]
     aap = AspectAwarePreprocessor(build_size, build_size)
-    (R, G, B) = ([], [], [])
 
     # loop over the dataset tuples
     for (dType, paths, labels, outputPath) in datasets:
@@ -116,21 +93,7 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	for (i, (path, label)) in enumerate(zip(paths, labels)):
     		# load the image and process it
     		image = cv2.imread(path)
-    		if(image is None):
-    			print(path)
-    			os.remove(path)
-    			continue
     		image = aap.preprocess(image)
-
-    		# if we are building the training dataset, then compute the
-    		# mean of each channel in the image, then update the
-    		# respective lists
-    		if dType == "train":
-    			(b, g, r) = cv2.mean(image)[:3]
-    			R.append(r)
-    			G.append(g)
-    			B.append(b)
-
     		# add the image and label # to the HDF5 dataset
     		writer.add([image], [label])
     		pbar.update(i)
@@ -139,12 +102,3 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	pbar.finish()
     	writer.close()
 
-    # construct a dictionary of averages, then serialize the means to a
-    # JSON file
-    DATASET_MEAN = "./output/pneumonia_mean.json"
-
-    print("[INFO] serializing means...")
-    D = {"R": np.mean(R), "G": np.mean(G), "B": np.mean(B)}
-    f = open(DATASET_MEAN, "w")
-    f.write(json.dumps(D))
-    f.close()
