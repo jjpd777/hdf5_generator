@@ -73,7 +73,6 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	("val", valPaths, valLabels, val_hdf5),
     	("test", testPaths, testLabels, test_hdf5)]
     aap = AspectAwarePreprocessor(build_size, build_size)
-    (R, G, B) = ([], [], [])
 
     # loop over the dataset tuples
     for (dType, paths, labels, outputPath) in datasets:
@@ -96,11 +95,6 @@ def write_hdf5(splits,build_size,output_hdf5s):
     		# if we are building the training dataset, then compute the
     		# mean of each channel in the image, then update the
     		# respective lists
-    		if dType == "train":
-    			(b, g, r) = cv2.mean(image)[:3]
-    			R.append(r)
-    			G.append(g)
-    			B.append(b)
 
     		# add the image and label # to the HDF5 dataset
     		writer.add([image], [label])
@@ -110,12 +104,3 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	pbar.finish()
     	writer.close()
 
-    # construct a dictionary of averages, then serialize the means to a
-    # JSON file
-    DATASET_MEAN = "./output/malaria_mean.json"
-
-    print("[INFO] serializing means...")
-    D = {"R": np.mean(R), "G": np.mean(G), "B": np.mean(B)}
-    f = open(DATASET_MEAN, "w")
-    f.write(json.dumps(D))
-    f.close()
