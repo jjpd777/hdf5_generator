@@ -91,7 +91,6 @@ def write_hdf5(splits,build_size,output_hdf5s):
     		# load the image and process it
     		image = cv2.imread(path)
     		image = aap.preprocess(image)
-
     		# add the image and label # to the HDF5 dataset
     		writer.add([image], [label])
     		pbar.update(i)
