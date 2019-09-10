@@ -92,10 +92,6 @@ def write_hdf5(splits,build_size,output_hdf5s):
     		image = cv2.imread(path)
     		image = aap.preprocess(image)
 
-    		# if we are building the training dataset, then compute the
-    		# mean of each channel in the image, then update the
-    		# respective lists
-
     		# add the image and label # to the HDF5 dataset
     		writer.add([image], [label])
     		pbar.update(i)
