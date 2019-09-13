@@ -14,7 +14,7 @@ from pathlib import Path
 
 def prepare_dataset(raw_path,clean_path):
     raw_path = Path(raw_path)
-    print("There data labels are the following:")
+    print("The data labels are the following:")
     count = 0
     for case in raw_path.glob('*'):
         label = str(case).split("/")[-1]
@@ -98,4 +98,3 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	# close the HDF5 writer
     	pbar.finish()
     	writer.close()
-
