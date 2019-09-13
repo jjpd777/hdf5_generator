@@ -1,4 +1,4 @@
-from utils.preprocess_utils import split_data, write_hdf5
+from utils.preprocess_utils import * 
 from utils.format_labels import write_labels_to_csv, dataframe_to_arrray
 import pandas as pd
 
@@ -6,7 +6,8 @@ import argparse
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-p","--preprocess")
-ap.add_argument("-b","--build_hdf5")
+ap.add_argument("-s","--split")
+ap.add_argument("-b","--build")
 args = vars(ap.parse_args())
 
 BASE_PATH = "../input/"
@@ -21,7 +22,7 @@ if args["preprocess"]:
     free_memory(data)
 
 
-if args["build_hdf5"]:
+if args["split"]:
     HUVEC_VAL = 4000
     HEPG2_VAL= 2000
     RPE_VAL= 2000
@@ -31,10 +32,17 @@ if args["build_hdf5"]:
     BUILD_DIMS = 512
     BUILD_CHANELS = 6
     CLEAN_PATH = "../clean_data/train"
+
+    splits = split_data(TEST_DISTRIBUTION,VAL_DISTRIBUTION,CLEAN_PATH)
+if args["build"]:
+    TRAIN_CSV = "./train_split.csv"
+    VAL_CSV= "./val_split.csv"
+    TEST_CSV = "./test_split.csv"
+    train_paths, val_paths, test_paths = load_paths(TRAIN_CSV,VAL_CSV,                                                     TEST_CSV)
     TRAIN_HDF5 = "../clean_data/hdf5/train.hdf5"
     VAL_HDF5 = "../clean_data/hdf5/val.hdf5"
     TEST_HDF5 = "../clean_data/hdf5/test.hdf5"
     HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5]
-
-    splits = split_data(TEST_DISTRIBUTION,VAL_DISTRIBUTION,CLEAN_PATH)
+    
+    #train_labels,val_labels, test_labels = get_labels(splits)
     #write_hdf5(splits, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)

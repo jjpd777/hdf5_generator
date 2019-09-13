@@ -6,6 +6,8 @@ from imutils import paths
 import numpy as np
 import random
 import progressbar
+import pandas as pd
+import csv
 import json
 import cv2
 import os
@@ -14,10 +16,6 @@ from pathlib import Path
 
 
 def select_sister_sirna(original_data,val_test_subset):
-    ## Receives original_data, val_test_subset
-    ## Eliminate repeated items
-    ## gets sister SiRNA
-    ## return val_test_subset, remaining data
     sister_sirna = []
     [original_data.remove(x) for x in val_test_subset]
     for image in val_test_subset:
@@ -56,6 +54,11 @@ def pick_subset(values_distribution, image_paths):
 
     return (original_data,subset) 
 
+def write_splits(file_splits):
+    for (dst, content) in file_splits:
+        df = pd.DataFrame(content,columns = ["data"])
+        df.to_csv(dst,index=False)
+
 def split_data(test_distribution,val_distributions,clean_path):
     np.random.seed(107)
     path = Path(clean_path)
@@ -65,20 +68,49 @@ def split_data(test_distribution,val_distributions,clean_path):
     train_data, test_data= pick_subset(test_distribution,trainPaths)
     print("[INFO] Processing validation data..")
     train_data, val_data= pick_subset(val_distributions,train_data)
-    result = train_data + val_data + test_data
-    print(len(result))
-    return (test_split, val_split)
-    return "Gucci"
-def write_hdf5(splits,build_size,output_hdf5s):
+    np.random.shuffle(train_data)
+    np.random.shuffle(val_data)
+    np.random.shuffle(test_data)
 
+    result = train_data + val_data + test_data
+    train = len(train_data)
+    val = len(val_data)
+    test = len(test_data)
+    print("The total available data is ",len(result))
+    print("There are {} training, {} validation and {} test images".format(train,val, test))
+    file_splits = [ ("train_split.csv",train_data),("val_split.csv",val_data),
+                    ("test_split.csv",test_data)]
+    write_splits(file_splits)
+    return (train_data, val_data,test_data)
+def load_paths(train,val,test):
+    train = pd.read_csv(train)
+    train = train.values.tolist() 
+    val = pd.read_csv(val)
+    val = val.values.tolist()
+    test = pd.read_csv(test)
+    test = test.values.tolist()
+    print("[INFO]There are {} training, {} validation and {} test images".format(len(train),len(val), len(test)))
+    return(train,val,test)
+def get_labels(splits):
+    train_labels = []
+    val_labels = []
+    test_labels =[]
+    result = []
+    for data in splits:
+        buff = [x.split("-")[0] for x in data]
+        result.append(buff)
+    print(len(result))
+    return result
+
+
+def write_hdf5(splits,build_size,output_hdf5s):
     train_hdf5,val_hdf5,test_hdf5 = output_hdf5s
-    (_, testPaths, _, testLabels) = splits[0]
-    (trainPaths, valPaths, trainLabels, valLabels) = splits[1]
+    (train_paths, val_paths,test_paths ) = splits
 
     datasets = [
-    	("train", trainPaths, trainLabels, train_hdf5),
-    	("val", valPaths, valLabels, val_hdf5),
-    	("test", testPaths, testLabels, test_hdf5)]
+    	("train", train_paths, train_labels, train_hdf5),
+    	("val", val_paths, val_labels, val_hdf5),
+    	("test", test_paths, test_labels, test_hdf5)]
     aap = AspectAwarePreprocessor(build_size, build_size)
 
     # loop over the dataset tuples
