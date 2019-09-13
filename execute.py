@@ -39,6 +39,8 @@ if args["build"]:
     VAL_CSV= "./val_split.csv"
     TEST_CSV = "./test_split.csv"
     train_paths, val_paths, test_paths = load_paths(TRAIN_CSV,VAL_CSV,                                                     TEST_CSV)
+    paths = [train_paths,val_paths,test_paths]
+    res = get_labels(paths)
     TRAIN_HDF5 = "../clean_data/hdf5/train.hdf5"
     VAL_HDF5 = "../clean_data/hdf5/val.hdf5"
     TEST_HDF5 = "../clean_data/hdf5/test.hdf5"

@@ -84,11 +84,11 @@ def split_data(test_distribution,val_distributions,clean_path):
     return (train_data, val_data,test_data)
 def load_paths(train,val,test):
     train = pd.read_csv(train)
-    train = train.values.tolist() 
+    train = list(train["data"])
     val = pd.read_csv(val)
-    val = val.values.tolist()
+    val = list(val["data"])
     test = pd.read_csv(test)
-    test = test.values.tolist()
+    test = list(test["data"])
     print("[INFO]There are {} training, {} validation and {} test images".format(len(train),len(val), len(test)))
     return(train,val,test)
 def get_labels(splits):
@@ -97,9 +97,10 @@ def get_labels(splits):
     test_labels =[]
     result = []
     for data in splits:
-        buff = [x.split("-")[0] for x in data]
+        buff = [x.split("/")[-1] for x in data]
+        label = [x.split("-")[0] for x in buff]
         result.append(buff)
-    print(len(result))
+    print("[INFO]There are {} training, {} validation and {} test labels".format(len(result[0]),len(result[1]), len(result[2])))
     return result
 
 
