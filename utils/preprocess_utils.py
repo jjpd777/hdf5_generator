@@ -18,16 +18,16 @@ def select_sister_sirna(original_data,val_test_subset):
     ## Eliminate repeated items
     ## gets sister SiRNA
     ## return val_test_subset, remaining data
-    carry = []
+    sister_sirna = []
+    [original_data.remove(x) for x in val_test_subset]
     for image in val_test_subset:
-        if(image in original_data):
-            original_data.remove(image)
-            substring = image[:-6]
-            print(substring)
-            for image in original_data:
-                if substring in image:
-                    carry.append(image)
-    print(len(carry))
+       substring = image[:-6]
+       for og in original_data:
+           if substring in og:
+               sister_sirna.append(og)
+    print("The total number of SiRNAs with sisters is", len(sister_sirna))
+    result_val_test = val_test_subset + sister_sirna 
+    return (original_data, result_val_test)
 
     return
 def pick_subset(values_distribution, image_paths):
@@ -43,7 +43,6 @@ def pick_subset(values_distribution, image_paths):
     for(label, num) in subsets:
         ptr = 0
         label_count = 0
-        print("RPE" in image_paths[0])
         while(num//2>label_count):
             if(label in image_paths[ptr]):
                 val_test_subset.append(image_paths[ptr])
@@ -51,22 +50,20 @@ def pick_subset(values_distribution, image_paths):
                 ptr+=1
             else:
                 ptr+=1
-        print("This was label",label,"and a total count of",label_count)
-    print(val_test_subset[:5])
+        print("This is label",label,"with a total count of",label_count)
     print("This is the total subset", len(val_test_subset))
-    a = val_test_subset[:10]
-    select_sister_sirna(image_paths,a)
+    original_data, subset = select_sister_sirna(image_paths,val_test_subset)
 
 
     return "lool"
 
-def split_data(values_distribution,clean_path):
+def split_data(test_distribution,val_distributions,clean_path):
     np.random.seed(107)
     path = Path(clean_path)
     trainPaths = list(path.glob('*.npy'))
-    print(len(trainPaths))
     np.random.shuffle(trainPaths)
-    subsets = pick_subset(values_distribution,trainPaths)
+    train_data, test_data= pick_subset(test_distribution,trainPaths)
+    train_data, val_data= pick_subset(val_distributions,train_data)
     # # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     # buff = [x.split("/")[-1] for x in trainPaths]
     # labels = [x.split("-")[0] for x in buff]
