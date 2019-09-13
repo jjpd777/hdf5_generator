@@ -13,13 +13,49 @@ from glob import glob
 from pathlib import Path
 
 
+def select_sister_sirna(original_data,val_test_subset):
+    ## Receives original_data, val_test_subset
+    ## Eliminate repeated items
+    ## gets sister SiRNA
+    ## return val_test_subset, remaining data
+    carry = []
+    for image in val_test_subset:
+        if(image in original_data):
+            original_data.remove(image)
+            substring = image[:-6]
+            print(substring)
+            for image in original_data:
+                if substring in image:
+                    carry.append(image)
+    print(len(carry))
 
-def pick_subset(values_distribution, list_paths):
+    return
+def pick_subset(values_distribution, image_paths):
     HUVEC = values_distribution[0]
     HEPG2 = values_distribution[1]
     RPE = values_distribution[2]
     U2OS = values_distribution[3]
-    print(list_paths[0])
+    image_paths = [str(x) for x in image_paths]
+    print(list(image_paths[:5]))
+    subsets = [("HUVEC", HUVEC), ("HEPG2", HEPG2),
+               ("RPE", RPE), ("U2OS", U2OS)]
+    val_test_subset= []
+    for(label, num) in subsets:
+        ptr = 0
+        label_count = 0
+        print("RPE" in image_paths[0])
+        while(num//2>label_count):
+            if(label in image_paths[ptr]):
+                val_test_subset.append(image_paths[ptr])
+                label_count+=1
+                ptr+=1
+            else:
+                ptr+=1
+        print("This was label",label,"and a total count of",label_count)
+    print(val_test_subset[:5])
+    print("This is the total subset", len(val_test_subset))
+    a = val_test_subset[:10]
+    select_sister_sirna(image_paths,a)
 
 
     return "lool"
