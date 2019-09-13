@@ -29,8 +29,6 @@ if args["split"]:
     U2OS_VAL= 800
     VAL_DISTRIBUTION = [HUVEC_VAL,HEPG2_VAL,RPE_VAL,U2OS_VAL]
     TEST_DISTRIBUTION = [x/2 for x in VAL_DISTRIBUTION]
-    BUILD_DIMS = 512
-    BUILD_CHANELS = 6
     CLEAN_PATH = "../clean_data/train"
 
     splits = split_data(TEST_DISTRIBUTION,VAL_DISTRIBUTION,CLEAN_PATH)
@@ -40,11 +38,13 @@ if args["build"]:
     TEST_CSV = "./test_split.csv"
     train_paths, val_paths, test_paths = load_paths(TRAIN_CSV,VAL_CSV,                                                     TEST_CSV)
     paths = [train_paths,val_paths,test_paths]
-    res = get_labels(paths)
+    train_labels, val_labels, test_labels= get_labels(paths)
+    labels = [train_labels, val_labels, test_labels]
     TRAIN_HDF5 = "../clean_data/hdf5/train.hdf5"
     VAL_HDF5 = "../clean_data/hdf5/val.hdf5"
     TEST_HDF5 = "../clean_data/hdf5/test.hdf5"
     HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5]
+    BUILD_DIMS = 512
+    BUILD_CHANELS = 6
     
-    #train_labels,val_labels, test_labels = get_labels(splits)
-    #write_hdf5(splits, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)
+    write_hdf5(paths,labels, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)

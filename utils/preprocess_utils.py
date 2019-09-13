@@ -26,7 +26,6 @@ def select_sister_sirna(original_data,val_test_subset):
     result_val_test = val_test_subset + sister_sirna 
     return (original_data, result_val_test)
 
-    return
 def pick_subset(values_distribution, image_paths):
     HUVEC = values_distribution[0]
     HEPG2 = values_distribution[1]
@@ -82,6 +81,7 @@ def split_data(test_distribution,val_distributions,clean_path):
                     ("test_split.csv",test_data)]
     write_splits(file_splits)
     return (train_data, val_data,test_data)
+
 def load_paths(train,val,test):
     train = pd.read_csv(train)
     train = list(train["data"])
@@ -92,21 +92,19 @@ def load_paths(train,val,test):
     print("[INFO]There are {} training, {} validation and {} test images".format(len(train),len(val), len(test)))
     return(train,val,test)
 def get_labels(splits):
-    train_labels = []
-    val_labels = []
-    test_labels =[]
     result = []
     for data in splits:
         buff = [x.split("/")[-1] for x in data]
         label = [x.split("-")[0] for x in buff]
-        result.append(buff)
+        result.append(label)
     print("[INFO]There are {} training, {} validation and {} test labels".format(len(result[0]),len(result[1]), len(result[2])))
-    return result
+    labels = [ result[ind] for ind,x in enumerate(result)]
+    return labels
 
-
-def write_hdf5(splits,build_size,output_hdf5s):
+def write_hdf5(input_paths,input_labels,build_size,channels,output_hdf5s):
     train_hdf5,val_hdf5,test_hdf5 = output_hdf5s
-    (train_paths, val_paths,test_paths ) = splits
+    (train_paths, val_paths,test_paths ) = input_paths 
+    (train_labels, val_labels,test_labels ) = input_labels 
 
     datasets = [
     	("train", train_paths, train_labels, train_hdf5),
@@ -118,7 +116,7 @@ def write_hdf5(splits,build_size,output_hdf5s):
     for (dType, paths, labels, outputPath) in datasets:
     	# create HDF5 writer
     	print("[INFO] building {}...".format(outputPath))
-    	writer = HDF5DatasetWriter((len(paths), build_size, build_size, 3), outputPath)
+    	writer = HDF5DatasetWriter((len(paths), build_size, build_size, channels), outputPath)
 
     	# initialize the progress bar
     	widgets = ["Building Dataset: ", progressbar.Percentage(), " ",
