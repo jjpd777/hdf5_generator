@@ -28,12 +28,12 @@ if args["build_hdf5"]:
     U2OS_VAL= 800
     VAL_DISTRIBUTION = [HUVEC_VAL,HEPG2_VAL,RPE_VAL,U2OS_VAL]
     TEST_DISTRIBUTION = [x/2 for x in VAL_DISTRIBUTION]
-    pick_subset()
     BUILD_DIMS = 512
     BUILD_CHANELS = 6
-    CLEAN_PATH = "../clean_data/train/"
+    CLEAN_PATH = "../clean_data/train"
     TRAIN_HDF5 = "../clean_data/hdf5/train.hdf5"
     VAL_HDF5 = "../clean_data/hdf5/val.hdf5"
+    TEST_HDF5 = "../clean_data/hdf5/test.hdf5"
     HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5]
 
     splits = split_data(VAL_DISTRIBUTION,CLEAN_PATH)

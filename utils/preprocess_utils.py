@@ -19,15 +19,18 @@ def pick_subset(values_distribution, list_paths):
     HEPG2 = values_distribution[1]
     RPE = values_distribution[2]
     U2OS = values_distribution[3]
-    print(ist_paths)
+    print(list_paths[0])
+
 
     return "lool"
 
 def split_data(values_distribution,clean_path):
     np.random.seed(107)
-    trainPaths = list(paths.list_images(clean_path))
-    np.shuffle(trainPaths)
-    subsets = pick_subsets(values_distribution,trainPaths)
+    path = Path(clean_path)
+    trainPaths = list(path.glob('*.npy'))
+    print(len(trainPaths))
+    np.random.shuffle(trainPaths)
+    subsets = pick_subset(values_distribution,trainPaths)
     # # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     # buff = [x.split("/")[-1] for x in trainPaths]
     # labels = [x.split("-")[0] for x in buff]
