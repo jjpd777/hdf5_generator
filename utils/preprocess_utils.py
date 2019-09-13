@@ -25,7 +25,6 @@ def select_sister_sirna(original_data,val_test_subset):
        for og in original_data:
            if substring in og:
                sister_sirna.append(og)
-    print("The total number of SiRNAs with sisters is", len(sister_sirna))
     result_val_test = val_test_subset + sister_sirna 
     return (original_data, result_val_test)
 
@@ -36,7 +35,6 @@ def pick_subset(values_distribution, image_paths):
     RPE = values_distribution[2]
     U2OS = values_distribution[3]
     image_paths = [str(x) for x in image_paths]
-    print(list(image_paths[:5]))
     subsets = [("HUVEC", HUVEC), ("HEPG2", HEPG2),
                ("RPE", RPE), ("U2OS", U2OS)]
     val_test_subset= []
@@ -51,36 +49,25 @@ def pick_subset(values_distribution, image_paths):
             else:
                 ptr+=1
         print("This is label",label,"with a total count of",label_count)
-    print("This is the total subset", len(val_test_subset))
+    print("This is the total subset prior to sister matching", len(val_test_subset))
     original_data, subset = select_sister_sirna(image_paths,val_test_subset)
+    print("This is the total subset after sister matching", len(subset))
 
 
-    return "lool"
+    return (original_data,subset) 
 
 def split_data(test_distribution,val_distributions,clean_path):
     np.random.seed(107)
     path = Path(clean_path)
     trainPaths = list(path.glob('*.npy'))
     np.random.shuffle(trainPaths)
+    print("[INFO] Processing test data..")
     train_data, test_data= pick_subset(test_distribution,trainPaths)
+    print("[INFO] Processing validation data..")
     train_data, val_data= pick_subset(val_distributions,train_data)
-    # # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
-    # buff = [x.split("/")[-1] for x in trainPaths]
-    # labels = [x.split("-")[0] for x in buff]
-    #
-    # # le = LabelEncoder()
-    # # trainLabels = le.fit_transform(labels)
-    #
-    # test_split = train_test_split(trainPaths, trainLabels,
-	# test_size=num_test_images, stratify=trainLabels,
-	# random_state=777)
-    #
-    # # perform another stratified sampling, this time to build the
-    # # validation data
-    # val_split = train_test_split(trainPaths, trainLabels,
-    # 	test_size=num_val_images, stratify=trainLabels,
-    # 	random_state=777)
-    # return (test_split, val_split)
+    result = train_data + val_data + test_data
+    print(len(result))
+    return (test_split, val_split)
     return "Gucci"
 def write_hdf5(splits,build_size,output_hdf5s):
 

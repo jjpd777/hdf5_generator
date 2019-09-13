@@ -36,5 +36,5 @@ if args["build_hdf5"]:
     TEST_HDF5 = "../clean_data/hdf5/test.hdf5"
     HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5]
 
-    splits = split_data(VAL_DISTRIBUTION,CLEAN_PATH)
+    splits = split_data(TEST_DISTRIBUTION,VAL_DISTRIBUTION,CLEAN_PATH)
     #write_hdf5(splits, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)
