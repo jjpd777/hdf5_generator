@@ -1,5 +1,5 @@
 import pandas as pd
-from rxrx_utils import load_site
+from .rxrx_utils import load_site
 import numpy as np
 
 BASE_PATH = "../input"

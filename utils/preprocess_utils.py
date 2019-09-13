@@ -19,7 +19,7 @@ def pick_subset(values_distribution, list_paths):
     HEPG2 = values_distribution[1]
     RPE = values_distribution[2]
     U2OS = values_distribution[3]
-    for
+    print(ist_paths)
 
     return "lool"
 

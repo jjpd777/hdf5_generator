@@ -1,4 +1,4 @@
-from preprocess_utils import prepare_dataset, check_corrupted_images, split_data, write_hdf5
+from utils.preprocess_utils import split_data, write_hdf5
 from utils.format_labels import write_labels_to_csv, dataframe_to_arrray
 import pandas as pd
 
@@ -26,7 +26,7 @@ if args["build_hdf5"]:
     HEPG2_VAL= 2000
     RPE_VAL= 2000
     U2OS_VAL= 800
-    VAL_DISTRIBUTION = [HUVEV_VAL,HEPG2_VAL,RPE_VAL,U2OS_VAL]
+    VAL_DISTRIBUTION = [HUVEC_VAL,HEPG2_VAL,RPE_VAL,U2OS_VAL]
     TEST_DISTRIBUTION = [x/2 for x in VAL_DISTRIBUTION]
     pick_subset()
     BUILD_DIMS = 512
@@ -37,4 +37,4 @@ if args["build_hdf5"]:
     HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5]
 
     splits = split_data(VAL_DISTRIBUTION,CLEAN_PATH)
-    write_hdf5(splits, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)
+    #write_hdf5(splits, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)

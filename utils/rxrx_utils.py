@@ -28,7 +28,7 @@ def image_path(dataset, experiment, plate, address, site, channel,
 
 #
 def load_site(base_path, dataset, experiment, plate, well, site,
-              channels=DEFAULT_CHANNELSs):
+              channels=DEFAULT_CHANNELS):
 
     channel_paths = [
         image_path(
