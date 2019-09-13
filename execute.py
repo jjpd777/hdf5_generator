@@ -2,20 +2,29 @@ from preprocess_utils import prepare_dataset, check_corrupted_images, split_data
 from utils.format_labels import write_labels_to_csv, dataframe_to_arrray
 import pandas as pd
 
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-p","--preprocess")
+ap.add_argument("-b","--build_hdf5")
+args = vars(ap.parse_args())
 
 BASE_PATH = "../input/"
 TRAIN = BASE_PATH + "train.csv"
 TEST = BASE_PATH + "test.csv"
-# write_labels_to_csv(TRAIN,TEST)
 
+if args["preprocess"]:
+    write_labels_to_csv(TRAIN,TEST)
+    PROCESSED_CSV = "../train_sirna_labels.csv"
+    data = pd.read_csv(PROCESSED_CSV)
+    dataframe_to_arrray(data)
+    free_memory(data)
 
-LABELED = "../train_sirna_labels.csv"
-data = pd.read_csv(LABELED)
-dataframe_to_arrray(data)
-################
 NUM_TEST_IMAGES = 2700
 NUM_VAL_IMAGES = 2700
-CLEAN_PATH = "../clean_data/data/"
+CLEAN_PATH = "../clean_data/train/"
+if args["build_hdf5"]:
+################
 
 
 #prepare_dataset(RAW_PATH, CLEAN_PATH)

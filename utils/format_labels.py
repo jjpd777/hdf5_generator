@@ -50,3 +50,15 @@ def dataframe_to_arrray(df):
         path = df.iloc[i,0]
         sirna = df.iloc[i,1]
         rewrite_to_array(path,sirna)
+        
+def free_memory(df):
+    rows = df.shape[0]
+    for i in tqdm(range(rows)):
+        path = df.iloc[i,0]
+        sites = [1,2]
+        channels = [1,2,3,4,5,6]
+        for i in sites:
+           buff = path + "_s{}_".format(i)
+           for channel in channels:
+               path_to_remove =BASE_PATH + "/train/"+ buff + "w{}".format(channel) + ".png"
+               os.remove(path_to_remove)
