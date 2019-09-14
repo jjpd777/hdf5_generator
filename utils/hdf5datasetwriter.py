@@ -17,7 +17,7 @@ class HDF5DatasetWriter:
 		# class labels
 		self.db = h5py.File(outputPath, "w")
 		self.data = self.db.create_dataset(dataKey, dims,
-			dtype="float")
+			dtype="int")
 		self.labels = self.db.create_dataset("labels", (dims[0],),
 			dtype="int")
 

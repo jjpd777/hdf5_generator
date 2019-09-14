@@ -52,4 +52,4 @@ if args["build"]:
     BUILD_DIMS = 512
     BUILD_CHANELS = 6
     
-    #write_hdf5(paths,labels, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)
+    write_hdf5(paths,labels, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)

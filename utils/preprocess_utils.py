@@ -97,7 +97,7 @@ def get_labels(splits):
     result = []
     for data in splits:
         buff = [x.split("/")[-1] for x in data]
-        label = [x.split("-")[0] for x in buff]
+        label = [int(x.split("-")[0]) for x in buff]
         result.append(label)
     print("[INFO]There are {} training, {} validation and {} test labels".format(len(result[0]),len(result[1]), len(result[2])))
     labels = [ result[ind] for ind,x in enumerate(result)]
@@ -133,6 +133,7 @@ def write_hdf5(input_paths,input_labels,build_size,channels,output_hdf5s):
     		#image = aap.preprocess(image)
     		# add the image and label # to the HDF5 dataset
                 image = np.load(path)
+                print(image.dtype)
                 writer.add([image],[label])
                 #os.remove(path)
                 pbar.update(i)
