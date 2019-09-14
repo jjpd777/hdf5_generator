@@ -25,8 +25,9 @@ if args["preprocess"]:
     dataframe_to_arrray(train_data_csv,DST_PROCESSED_TRAIN)
     #dataframe_to_arrray(test_data_csv,DST_PROCESSED_TEST)
 if["free_data"]:
-    data = pd.read_csv(PROCESSED_TRAIN_CSV)
+    #data = pd.read_csv(PROCESSED_TRAIN_CSV)
     #free_memory(data)
+    print("free")
 
 TRAIN_CSV = "./train_split.csv"
 VAL_CSV= "./val_split.csv"

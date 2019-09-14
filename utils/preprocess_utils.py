@@ -127,7 +127,7 @@ def write_hdf5(input_paths,input_labels,build_size,channels,output_hdf5s):
     		widgets=widgets).start()
 
     	# loop over the image paths
-    	for (i, (path, label)) in tqdm(enumerate(zip(paths, labels))):
+    	for (i, (path, label)) in enumerate(zip(paths, labels)):
     		# load the image and process it
     		#image = cv2.imread(path)
     		#image = aap.preprocess(image)
