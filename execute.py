@@ -12,19 +12,21 @@ ap.add_argument("-b","--build")
 args = vars(ap.parse_args())
 
 BASE_PATH = "../input/"
-
+PROCESSED_TRAIN_CSV = "./train_sirna_labels.csv" 
+PROCESSED_TEST_CSV = "./train_sirna_labels.csv" 
+DST_PROCESSED_TRAIN = "../clean_data/train/"
+DST_PROCESSED_TEST = "../clean_data/predict/"
 if args["preprocess"]:
     TRAIN = BASE_PATH + "train.csv"
     TEST = BASE_PATH + "test.csv"
-    write_labels_to_csv(TRAIN,TEST)
-    PROCESSED_CSV = "../train_sirna_labels.csv"
-    data = pd.read_csv(PROCESSED_CSV)
-    dataframe_to_arrray(data)
+    #write_labels_to_csv(TRAIN,TEST)
+    train_data_csv = pd.read_csv(PROCESSED_TRAIN_CSV)
+    #test_data_csv = pd.read_csv(PROCESSED_TEST_CSV)
+    dataframe_to_arrray(train_data_csv,DST_PROCESSED_TRAIN)
+    #dataframe_to_arrray(test_data_csv,DST_PROCESSED_TEST)
 if["free_data"]:
-    PROCESSED_CSV = "../train_sirna_labels.csv"
-    data = pd.read_csv(PROCESSED_CSV)
+    data = pd.read_csv(PROCESSED_TRAIN_CSV)
     #free_memory(data)
-
 
 TRAIN_CSV = "./train_split.csv"
 VAL_CSV= "./val_split.csv"
@@ -49,7 +51,7 @@ if args["build"]:
     paths = [train_paths,val_paths,test_paths]
     train_labels, val_labels, test_labels= get_labels(paths)
     labels = [train_labels, val_labels, test_labels]
-    BUILD_DIMS = 512
+    BUILD_DIMS = 128 
     BUILD_CHANELS = 6
     
     write_hdf5(paths,labels, BUILD_DIMS,BUILD_CHANELS,HDF5_OUTPUTS)
