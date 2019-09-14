@@ -6,6 +6,7 @@ from imutils import paths
 import numpy as np
 import random
 import progressbar
+from tqdm import tqdm
 import pandas as pd
 import csv
 import json
@@ -35,7 +36,7 @@ def pick_subset(values_distribution, image_paths):
     subsets = [("HUVEC", HUVEC), ("HEPG2", HEPG2),
                ("RPE", RPE), ("U2OS", U2OS)]
     val_test_subset= []
-    for(label, num) in subsets:
+    for(label, num) in tqdm(subsets):
         ptr = 0
         label_count = 0
         while(num//2>label_count):
@@ -58,7 +59,7 @@ def write_splits(file_splits):
         df = pd.DataFrame(content,columns = ["data"])
         df.to_csv(dst,index=False)
 
-def split_data(test_distribution,val_distributions,clean_path):
+def split_data(test_distribution,val_distributions,clean_path,file_names):
     np.random.seed(107)
     path = Path(clean_path)
     trainPaths = list(path.glob('*.npy'))
@@ -75,10 +76,11 @@ def split_data(test_distribution,val_distributions,clean_path):
     train = len(train_data)
     val = len(val_data)
     test = len(test_data)
+    train_file, val_file, test_file = file_names
     print("The total available data is ",len(result))
     print("There are {} training, {} validation and {} test images".format(train,val, test))
-    file_splits = [ ("train_split.csv",train_data),("val_split.csv",val_data),
-                    ("test_split.csv",test_data)]
+    file_splits = [ (train_file,train_data),(val_file,val_data),
+                    (test_file,test_data)]
     write_splits(file_splits)
     return (train_data, val_data,test_data)
 
@@ -89,8 +91,8 @@ def load_paths(train,val,test):
     val = list(val["data"])
     test = pd.read_csv(test)
     test = list(test["data"])
-    print("[INFO]There are {} training, {} validation and {} test images".format(len(train),len(val), len(test)))
     return(train,val,test)
+
 def get_labels(splits):
     result = []
     for data in splits:
@@ -127,11 +129,13 @@ def write_hdf5(input_paths,input_labels,build_size,channels,output_hdf5s):
     	# loop over the image paths
     	for (i, (path, label)) in enumerate(zip(paths, labels)):
     		# load the image and process it
-    		image = cv2.imread(path)
-    		image = aap.preprocess(image)
+    		#image = cv2.imread(path)
+    		#image = aap.preprocess(image)
     		# add the image and label # to the HDF5 dataset
-    		writer.add([image], [label])
-    		pbar.update(i)
+                image = np.load(path)
+                writer.add([image],[label])
+                #os.remove(path)
+                pbar.update(i)
 
     	# close the HDF5 writer
     	pbar.finish()

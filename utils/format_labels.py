@@ -1,9 +1,12 @@
 import pandas as pd
 from .rxrx_utils import load_site
 import numpy as np
+from tqdm import tqdm
+import os
 
 BASE_PATH = "../input"
 def write_labels_to_csv(train_path,test_path):
+    print(train_path)
     train =pd.read_csv(train_path)
     test =pd.read_csv(test_path)
     print(train.head)
@@ -23,8 +26,8 @@ def write_labels_to_csv(train_path,test_path):
     test["path"] = test["experiment"] + "/Plate" + test["plate"].astype(str)+"/" +test["well"]
     write_test = train[["path","sirna"]]
 
-    write_train.to_csv(r'./train_sirna_labels.csv',index=False)
-    write_test.to_csv(r'./test_sirna_labels.csv',index=False)
+    write_train.to_csv(r'./rebuild_train_sirna_labels.csv',index=False)
+    write_test.to_csv(r'./rebuild_test_sirna_labels.csv',index=False)
 
 def save_array(path,arr):
     np.save(path,arr)
@@ -40,7 +43,7 @@ def rewrite_to_array(path,sirna):
     for site in sites:
         array_image = load_site(BASE_PATH,'train',experiment,plate_number,well,site)
         tag = '-'.join(elements)+ '-'+str(site)
-        destination = "../clean_data/"+str(sirna) + "-"+tag
+        destination = "../clean_data/train/"+str(sirna) + "-"+tag
 
         save_array(destination,array_image)
 
