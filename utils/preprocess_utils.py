@@ -68,8 +68,11 @@ def split_data(test_distribution,val_distributions,clean_path,file_names):
     train_data, test_data= pick_subset(test_distribution,trainPaths)
     print("[INFO] Processing validation data..")
     train_data, val_data= pick_subset(val_distributions,train_data)
+    np.random.seed(223)
     np.random.shuffle(train_data)
+    np.random.seed(29)
     np.random.shuffle(val_data)
+    np.random.seed(757)
     np.random.shuffle(test_data)
 
     result = train_data + val_data + test_data

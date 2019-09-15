@@ -6,14 +6,14 @@ import argparse
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-p","--preprocess")
-ap.add_argument("-f","--free_data")
+ap.add_argument("-f","--free")
 ap.add_argument("-s","--split")
 ap.add_argument("-b","--build")
 args = vars(ap.parse_args())
 
 BASE_PATH = "../input/"
 PROCESSED_TRAIN_CSV = "./train_sirna_labels.csv" 
-PROCESSED_TEST_CSV = "./train_sirna_labels.csv" 
+PROCESSED_TEST_CSV = "./test_sirna_labels.csv" 
 DST_PROCESSED_TRAIN = "../clean_data/train/"
 DST_PROCESSED_TEST = "../clean_data/predict/"
 if args["preprocess"]:
@@ -24,7 +24,7 @@ if args["preprocess"]:
     #test_data_csv = pd.read_csv(PROCESSED_TEST_CSV)
     dataframe_to_arrray(train_data_csv,DST_PROCESSED_TRAIN)
     #dataframe_to_arrray(test_data_csv,DST_PROCESSED_TEST)
-if["free_data"]:
+if["free"]:
     #data = pd.read_csv(PROCESSED_TRAIN_CSV)
     #free_memory(data)
     print("free")
