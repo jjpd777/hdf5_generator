@@ -99,11 +99,13 @@ def load_paths(train,val,test):
 def get_labels(splits):
     result = []
     for data in splits:
+        print(data[0])
         buff = [x.split("/")[-1] for x in data]
         label = [int(x.split("-")[0]) for x in buff]
         result.append(label)
     print("[INFO]There are {} training, {} validation and {} test labels".format(len(result[0]),len(result[1]), len(result[2])))
     labels = [ result[ind] for ind,x in enumerate(result)]
+    print(len(labels))
     return labels
 
 def write_hdf5(input_paths,input_labels,build_size,channels,output_hdf5s):
