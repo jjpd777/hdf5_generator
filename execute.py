@@ -1,7 +1,7 @@
 from utils.preprocess_utils import prepare_dataset, check_corrupted_images, split_data, write_hdf5
 
 import argparse
-
+import os
 ap = argparse.ArgumentParser()
 ap.add_argument("-p","--preprocess",type=int,default=0)
 ap.add_argument("-b","--build",type=int,default=0)
@@ -13,11 +13,11 @@ BUILD_SIZE = 256
 TRAIN_HDF5 = "../clean_data/hdf5/train.hdf5"
 VAL_HDF5 = "../clean_data/hdf5/val.hdf5"
 TEST_HDF5 = "../clean_data/hdf5/test.hdf5"
-HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5]
-
+QUALITY_HDF5 = "../clean_data/hdf5/quality.hdf5"
+HDF5_OUTPUTS = [TRAIN_HDF5,VAL_HDF5,TEST_HDF5,QUALITY_HDF5]
+RAW_PATH = "../cell_images/"
+CLEAN_PATH = "../clean_data/data/"
 if args["preprocess"]:
-    RAW_PATH = "../cell_images/"
-    CLEAN_PATH = "../clean_data/data/"
     prepare_dataset(RAW_PATH, CLEAN_PATH)
     check_corrupted_images(CLEAN_PATH)
 if args["build"]:

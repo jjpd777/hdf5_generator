@@ -43,7 +43,7 @@ def check_corrupted_images(clean_path):
 def split_data(num_test_images, num_val_images,clean_path):
     np.random.seed(107)
     trainPaths = list(paths.list_images(clean_path))
-    np.shuffle(trainPaths)
+    np.random.shuffle(trainPaths)
     # buff in the format ./dataset/clean_data/data/PNEUMONIA-00.png
     buff = [x.split("/")[-1] for x in trainPaths]
     labels = [x.split("-")[0] for x in buff]
@@ -64,14 +64,17 @@ def split_data(num_test_images, num_val_images,clean_path):
 
 def write_hdf5(splits,build_size,output_hdf5s):
 
-    train_hdf5,val_hdf5,test_hdf5 = output_hdf5s
+    train_hdf5,val_hdf5,test_hdf5,quality_hdf5 = output_hdf5s
     (trainPaths, testPaths, trainLabels, testLabels) = splits[0]
     (trainPaths, valPaths, trainLabels, valLabels) = splits[1]
+    quality_assurance_paths = trainPaths[:100]
+    quality_assurance_labels = trainLabels[:100]
 
     datasets = [
     	("train", trainPaths, trainLabels, train_hdf5),
     	("val", valPaths, valLabels, val_hdf5),
-    	("test", testPaths, testLabels, test_hdf5)]
+    	("test", testPaths, testLabels, test_hdf5),
+    	("quality", quality_assurance_paths,quality_assurance_labels, test_hdf5)]
     aap = AspectAwarePreprocessor(build_size, build_size)
 
     # loop over the dataset tuples
