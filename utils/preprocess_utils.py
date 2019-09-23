@@ -1,5 +1,5 @@
-from utils import AspectAwarePreprocessor
-from utils import HDF5DatasetWriter
+from .aspectawarepreprocessor import AspectAwarePreprocessor
+from .hdf5datasetwriter import HDF5DatasetWriter
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from imutils import paths
@@ -86,16 +86,11 @@ def write_hdf5(splits,build_size,output_hdf5s):
     	pbar = progressbar.ProgressBar(maxval=len(paths),
     		widgets=widgets).start()
 
-    	# loop over the image paths
     	for (i, (path, label)) in enumerate(zip(paths, labels)):
-    		# load the image and process it
     		image = cv2.imread(path)
     		image = aap.preprocess(image)
-    		# add the image and label # to the HDF5 dataset
     		writer.add([image], [label])
     		pbar.update(i)
 
-    	# close the HDF5 writer
     	pbar.finish()
     	writer.close()
-
