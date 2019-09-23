@@ -70,11 +70,10 @@ def write_hdf5(splits,build_size,output_hdf5s):
     quality_assurance_paths = trainPaths[:100]
     quality_assurance_labels = trainLabels[:100]
 
-    datasets = [
-    	("train", trainPaths, trainLabels, train_hdf5),
-    	("val", valPaths, valLabels, val_hdf5),
-    	("test", testPaths, testLabels, test_hdf5),
-    	("quality", quality_assurance_paths,quality_assurance_labels, test_hdf5)]
+    datasets = [("train", trainPaths, trainLabels, train_hdf5),
+                ("val", valPaths, valLabels, val_hdf5),
+                ("test", testPaths, testLabels, test_hdf5),
+    	        ("quality", quality_assurance_paths,quality_assurance_labels, quality_hdf5)]
     aap = AspectAwarePreprocessor(build_size, build_size)
 
     # loop over the dataset tuples
